@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FunderPro — Shadow Account Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0B0E14;--card:#111620;--card2:#161D2A;--bdr:#1E2738;
+--accent:#E94560;--accentDim:rgba(233,69,96,.15);
+--blue:#3B82F6;--blueDim:rgba(59,130,246,.12);
+--green:#10B981;--greenDim:rgba(16,185,129,.12);
+--amber:#F59E0B;--amberDim:rgba(245,158,11,.12);
+--red:#EF4444;--redDim:rgba(239,68,68,.12);
+--txt:#E2E8F0;--muted:#8896AB;--dim:#4A5568;
+--font:'DM Sans','Segoe UI',system-ui,sans-serif;
+}
+body{background:var(--bg);color:var(--txt);font-family:var(--font);line-height:1.5}
+a{color:var(--accent);text-decoration:none}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(11,14,20,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 32px}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:8px;height:56px}
+.nav-logo{font-weight:800;font-size:16px;color:var(--accent);margin-right:24px;letter-spacing:-.02em}
+.nav-btn{background:transparent;border:none;color:var(--muted);padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.nav-btn:hover{background:var(--card2);color:var(--txt)}
+.nav-btn.active{background:var(--accentDim);color:var(--accent)}
+
+.wrap{max-width:1100px;margin:0 auto;padding:32px 32px 80px}
+
+.hero-tag{font-size:11px;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+h1{font-size:36px;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:15px;color:var(--muted);max-width:620px}
+
+.metrics{display:flex;gap:16px;flex-wrap:wrap;margin:32px 0}
+.metric{background:var(--card);border-radius:12px;padding:20px 24px;border:1px solid var(--bdr);flex:1;min-width:180}
+.metric-label{font-size:12px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+.metric-val{font-size:28px;font-weight:700;line-height:1.1}
+.metric-sub{font-size:13px;margin-top:6px}
+
+.callout{border-radius:12px;padding:28px;margin-bottom:32px}
+.callout-accent{background:linear-gradient(135deg,var(--accentDim),var(--card));border:1px solid rgba(233,69,96,.2)}
+.callout-green{background:var(--greenDim);border:1px solid rgba(16,185,129,.2)}
+.callout-red{background:var(--redDim);border:1px solid rgba(239,68,68,.2)}
+.callout-title{font-size:14px;font-weight:700;margin-bottom:12px}
+
+.section-title{font-size:22px;font-weight:700;margin:56px 0 24px;padding-bottom:12px;border-bottom:1px solid var(--bdr)}
+
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:24px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:16px}
+
+.row-item{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 20px;display:grid;align-items:center;gap:12px;margin-bottom:8px}
+.camp-row{grid-template-columns:1.5fr 100px 100px 80px 130px}
+.shadow-row{grid-template-columns:220px 80px 80px 1fr}
+
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em}
+.b-green{color:var(--green);background:var(--greenDim)}
+.b-red{color:var(--red);background:var(--redDim)}
+.b-amber{color:var(--amber);background:var(--amberDim)}
+.b-blue{color:var(--blue);background:var(--blueDim)}
+
+.sort-btn{background:var(--card);border:1px solid var(--bdr);color:var(--muted);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s}
+.sort-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.sort-btn:hover{border-color:var(--muted)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+
+.kw-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:12px}
+.kw-name{color:var(--txt);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.check-item{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-radius:8px;border:1px solid var(--bdr);margin-bottom:4px}
+.check-icon{width:20px;height:20px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.check-done{background:var(--green);color:#fff}
+.check-crit{background:var(--red);color:#fff}
+.check-todo{background:var(--bdr);color:var(--muted)}
+.check-label{flex:1;font-size:13px}
+
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.bar-label{width:200px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:28px;background:var(--bdr);border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;transition:width .8s ease}
+.bar-val{width:90px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0}
+
+.promo-card{background:var(--card);border-radius:8px;padding:16px;text-align:center}
+.promo-roas{font-size:22px;font-weight:700;color:var(--green)}
+
+.gap-row{display:flex;gap:40px;flex-wrap:wrap;align-items:center}
+.gap-item .gap-label{font-size:12px;color:var(--muted)}
+.gap-item .gap-val{font-size:28px;font-weight:700}
+
+.summary-box{border-radius:8px;padding:12px 20px;text-align:center;flex:1}
+.summary-val{font-size:22px;font-weight:700}
+.summary-label{font-size:11px;color:var(--muted)}
+
+.footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--bdr);text-align:center;font-size:12px;color:var(--dim)}
+
+.chart-wrap{position:relative;width:100%;margin:16px 0}
+
+@media(max-width:768px){
+  .camp-row{grid-template-columns:1fr 1fr}
+  .shadow-row{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr}
+  .grid-5{grid-template-columns:repeat(3,1fr)}
+  h1{font-size:26px}
+  .bar-label{width:120px;font-size:11px}
+  .gap-row{gap:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">FunderPro</div>
+    <a href="#overview" class="nav-btn active" onclick="setNav(this)">Overview</a>
+    <a href="#campaigns" class="nav-btn" onclick="setNav(this)">Campaign audit</a>
+    <a href="#keywords" class="nav-btn" onclick="setNav(this)">Keywords</a>
+    <a href="#shadow" class="nav-btn" onclick="setNav(this)">Shadow account</a>
+    <a href="#checklist" class="nav-btn" onclick="setNav(this)">Checklist</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div style="margin-bottom:48px">
+    <div class="hero-tag">Shadow Account Command Center</div>
+    <h1>Google Ads Performance<br>Diagnostic & Rebuild Plan</h1>
+    <p class="hero-sub">GA4 attribution data: Jul 2024 – Mar 2026. Total spend analyzed: €1.54M across 32 campaigns. Every recommendation backed by actual purchase revenue, not Google Ads self-reported conversions.</p>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overview"></div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Total ad spend</div>
+      <div class="metric-val">€1.54M</div>
+      <div class="metric-sub" style="color:var(--muted)">21 months analyzed</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">GA4 revenue</div>
+      <div class="metric-val" style="color:var(--amber)">€2.28M</div>
+      <div class="metric-sub" style="color:var(--amber)">1.48x blended ROAS</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Money burned</div>
+      <div class="metric-val" style="color:var(--red)">-€525K</div>
+      <div class="metric-sub" style="color:var(--red)">34% of spend wasted</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Profitable revenue</div>
+      <div class="metric-val" style="color:var(--green)">€1.50M</div>
+      <div class="metric-sub" style="color:var(--green)">From only €330K spend</div>
+    </div>
+  </div>
+
+  <!-- ATTRIBUTION GAP -->
+  <div class="callout callout-accent">
+    <div class="callout-title" style="color:var(--accent)">Critical finding: Attribution gap</div>
+    <div class="gap-row">
+      <div class="gap-item">
+        <div class="gap-label">Google Ads self-reported ROAS</div>
+        <div class="gap-val" style="color:var(--amber)">2.95x</div>
+      </div>
+      <div style="font-size:28px;color:var(--dim);align-self:center">→</div>
+      <div class="gap-item">
+        <div class="gap-label">GA4 actual purchase ROAS</div>
+        <div class="gap-val" style="color:var(--red)">1.48x</div>
+      </div>
+      <div style="flex:1;min-width:200px;font-size:13px;color:var(--muted);align-self:center">
+        Google Ads inflates performance by counting micro-conversions (page views, registrations) as conversions. GA4 tracks actual purchase revenue. The shadow account must be built on GA4 truth.
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN AUDIT -->
+  <h2 class="section-title" id="campaigns">Campaign-level GA4 audit</h2>
+
+  <div style="display:flex;gap:8px;margin-bottom:20px">
+    <button class="sort-btn active" onclick="sortCamps('cost',this)">Sort by spend</button>
+    <button class="sort-btn" onclick="sortCamps('rev',this)">Sort by revenue</button>
+    <button class="sort-btn" onclick="sortCamps('roas',this)">Sort by ROAS</button>
+  </div>
+
+  <div id="camp-list"></div>
+
+  <!-- SPEND VS REVENUE CHART -->
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">Spend vs revenue — campaign comparison</div>
+    <div class="chart-wrap" style="height:420px"><canvas id="chartSpend"></canvas></div>
+    <div style="display:flex;gap:20px;font-size:11px;color:var(--muted);margin-top:8px">
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--red);margin-right:4px"></span>Spend</span>
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px"></span>GA4 revenue</span>
+    </div>
+  </div>
+
+  <!-- ROAS CHART -->
+  <div class="card">
+    <div class="card-title">ROAS by campaign (GA4 attribution)</div>
+    <div class="chart-wrap" style="height:380px"><canvas id="chartRoas"></canvas></div>
+    <div style="display:flex;gap:20px;font-size:11px;color:var(--muted);margin-top:8px">
+      <span><span style="display:inline-block;width:10px;height:2px;border-top:1.5px dashed var(--red);margin-right:4px"></span>Break-even (1.0x)</span>
+      <span><span style="display:inline-block;width:10px;height:2px;border-top:1.5px dashed var(--green);margin-right:4px"></span>Profitability target (2.5x)</span>
+    </div>
+  </div>
+
+  <!-- MONEY PITS -->
+  <div class="callout callout-red">
+    <div class="callout-title" style="color:var(--red)">Biggest money pits (campaigns with ROAS &lt; 1.0x)</div>
+    <div id="money-pits"></div>
+  </div>
+
+  <!-- KEYWORDS -->
+  <h2 class="section-title" id="keywords">Keyword performance analysis</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">Top performing keywords (by CPA)</div>
+      <div id="kw-good"></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">Keywords burning money</div>
+      <div id="kw-bad"></div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted)">+ 9 keywords with zero conversions excluded from shadow account</div>
+    </div>
+  </div>
+
+  <!-- KEYWORD EFFICIENCY CHART -->
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">Top keywords — conversions vs CPA efficiency</div>
+    <div class="chart-wrap" style="height:400px"><canvas id="chartKw"></canvas></div>
+    <div style="display:flex;gap:20px;font-size:11px;color:var(--muted);margin-top:8px">
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);margin-right:4px"></span>CPA &lt; €20</span>
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--blue);margin-right:4px"></span>CPA €20-40</span>
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--amber);margin-right:4px"></span>CPA €40-80</span>
+      <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--red);margin-right:4px"></span>CPA &gt; €80</span>
+    </div>
+  </div>
+
+  <!-- PROMO INSIGHT -->
+  <div class="callout callout-green" style="margin-top:24px">
+    <div class="callout-title" style="color:var(--green)">Key insight: Promotional PMax campaigns massively outperform</div>
+    <div class="grid-3">
+      <div class="promo-card">
+        <div style="font-size:12px;color:var(--muted)">Black Friday</div>
+        <div class="promo-roas">76.98x</div>
+        <div style="font-size:12px;color:var(--muted)">€25.8K revenue</div>
+      </div>
+      <div class="promo-card">
+        <div style="font-size:12px;color:var(--muted)">Flash Dec 25%</div>
+        <div class="promo-roas">18.08x</div>
+        <div style="font-size:12px;color:var(--muted)">€25.2K revenue</div>
+      </div>
+      <div class="promo-card">
+        <div style="font-size:12px;color:var(--muted)">Xmas Campaign</div>
+        <div class="promo-roas">9.30x</div>
+        <div style="font-size:12px;color:var(--muted)">€35.3K revenue</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+      The shadow account includes a permanent promo PMax rotation (C5) to capture this proven 5-18x ROAS year-round, not just during holidays.
+    </div>
+  </div>
+
+  <!-- SHADOW ACCOUNT -->
+  <h2 class="section-title" id="shadow">Shadow account architecture</h2>
+
+  <div id="shadow-list"></div>
+
+  <!-- CSV SUMMARY -->
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">Import file ready: FunderPro_Shadow_Account_Import.csv</div>
+    <div class="grid-5">
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--blue)">7</div><div style="font-size:11px;color:var(--muted)">Campaigns</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--blue)">11</div><div style="font-size:11px;color:var(--muted)">Ad groups</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--blue)">63</div><div style="font-size:11px;color:var(--muted)">Keywords</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--blue)">49</div><div style="font-size:11px;color:var(--muted)">Negatives</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px 16px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--blue)">11</div><div style="font-size:11px;color:var(--muted)">RSAs</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">All campaigns set to Paused. All ad copy validated (30 char headlines / 90 char descriptions). PMax campaigns require manual asset group configuration in Google Ads web interface.</div>
+  </div>
+
+  <!-- CONVERSION WARNING -->
+  <div class="callout callout-accent" style="margin-top:16px">
+    <div class="callout-title" style="color:var(--accent)">Most important setting in the entire account</div>
+    <div style="font-size:13px;color:var(--txt);line-height:1.6">
+      <strong>Conversion action must be set to PURCHASE ONLY as primary.</strong> The PMax Brandformance campaign lost €351K because it optimized for 441K micro-conversions (page views, registrations) instead of actual purchases. Google Ads reported 0.89x ROAS; GA4 shows the real number is 0.19x. This single setting is the difference between the account's worst campaign and its best.
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <h2 class="section-title" id="checklist">Project completion checklist</h2>
+  <div id="check-list"></div>
+  <div style="display:flex;gap:12px;margin-top:16px">
+    <div class="summary-box" style="background:var(--greenDim)"><div class="summary-val" style="color:var(--green)" id="cnt-done">0</div><div class="summary-label">Complete</div></div>
+    <div class="summary-box" style="background:var(--redDim)"><div class="summary-val" style="color:var(--red)" id="cnt-crit">0</div><div class="summary-label">Critical path</div></div>
+    <div class="summary-box" style="background:var(--amberDim)"><div class="summary-val" style="color:var(--amber)" id="cnt-todo">0</div><div class="summary-label">To do</div></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>FunderPro Shadow Account Project — Confidential</div>
+    <div>Prepared by Bruno Carlos Ferreira | PPC Manager / Growth Lead | March 2026</div>
+    <div style="margin-top:4px;font-size:11px">All data sourced from GA4 (Jul 2024 – Mar 2026) and Google Ads (Jun 2025 – Mar 2026)</div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// DATA
+const C = [
+  {n:"PMax Lead Gen Propfirm",cost:105314,rev:738351,roas:7.01,t:"PMax",v:"STAR",vc:"green"},
+  {n:"Search Branded",cost:175795,rev:539865,roas:3.07,t:"Search",v:"PROFITABLE",vc:"green"},
+  {n:"Search Industry KW",cost:208431,rev:223453,roas:1.07,t:"Search",v:"BREAK-EVEN",vc:"amber"},
+  {n:"Search Competitor (Main)",cost:291359,rev:203104,roas:.70,t:"Search",v:"LOSING",vc:"red"},
+  {n:"PMax Instant Funding",cost:39007,rev:135115,roas:3.46,t:"PMax",v:"STRONG",vc:"green"},
+  {n:"PMax Brandformance",cost:430809,rev:80178,roas:.19,t:"PMax",v:"CATASTROPHIC",vc:"red"},
+  {n:"Prop Firm Failures",cost:80960,rev:73988,roas:.91,t:"Other",v:"LOSING",vc:"red"},
+  {n:"Competitors #2",cost:34531,rev:51179,roas:1.48,t:"Search",v:"MARGINAL",vc:"amber"},
+  {n:"PMax Xmas 2025",cost:3801,rev:35331,roas:9.30,t:"PMax",v:"HIGH ROAS",vc:"green"},
+  {n:"Africa+India KW",cost:32363,rev:28580,roas:.88,t:"Search",v:"LOSING",vc:"red"},
+  {n:"PMax Black Friday",cost:335,rev:25817,roas:76.98,t:"PMax",v:"EXTREME",vc:"green"},
+  {n:"PMax Flash Dec 25%",cost:1392,rev:25171,roas:18.08,t:"PMax",v:"HIGH ROAS",vc:"green"},
+  {n:"PMax Xmas Promo TMA",cost:3722,rev:23878,roas:6.42,t:"PMax",v:"HIGH ROAS",vc:"green"},
+  {n:"Demand Gen Main",cost:28787,rev:0,roas:0,t:"Demand Gen",v:"ZERO REV",vc:"red"},
+  {n:"P-Max TOF #2",cost:31876,rev:2907,roas:.09,t:"PMax",v:"WASTE",vc:"red"},
+];
+
+const KW_GOOD = [
+  {kw:"funded prop firm",conv:99,cpa:10.26,cvr:11.66},
+  {kw:"prop firms for stock trading",conv:794,cpa:10.34,cvr:8.75},
+  {kw:"pass prop firm challenge",conv:139,cpa:13.02,cvr:12.43},
+  {kw:"instant fund prop firm",conv:109,cpa:13.30,cvr:9.30},
+  {kw:"best funded prop firms",conv:223,cpa:13.38,cvr:8.55},
+  {kw:"prop firm stocks",conv:101,cpa:13.57,cvr:8.35},
+  {kw:"best prop trading firm",conv:121,cpa:13.85,cvr:7.93},
+  {kw:"prop firm",conv:2508,cpa:18.76,cvr:11.55},
+  {kw:"funded trading firms",conv:231,cpa:24.01,cvr:4.28},
+  {kw:"funderpro",conv:2233,cpa:27.73,cvr:14.37},
+];
+
+const KW_BAD = [
+  {kw:"forex challenge",cpa:771.35,cvr:.16},
+  {kw:"crypto prop firms",cpa:233.09,cvr:.61},
+  {kw:"prop firm reviews",cpa:233.51,cvr:1.01},
+  {kw:"funded account challenge",cpa:215.87,cvr:.54},
+  {kw:"online prop trading",cpa:150.39,cvr:.79},
+  {kw:"forex prop firm",cpa:105.77,cvr:1.69},
+];
+
+const SHADOW = [
+  {n:"C1: PMax Lead Gen",pct:"30-35%",roas:"7.01x",act:"Scale 2-3x — star performer"},
+  {n:"C2: Search Branded",pct:"15-20%",roas:"3.07x",act:"Fix CPC inflation (€4.84 → €1.50)"},
+  {n:"C3: Search Industry KW",pct:"20-25%",roas:"→ 2.5x+",act:"Restructured: 6 ad groups, keyword isolation"},
+  {n:"C4: PMax Instant Funding",pct:"10-15%",roas:"3.46x",act:"Scale 1.5x — proven demand"},
+  {n:"C5: Promo PMax Rotation",pct:"10-15%",roas:"6-18x",act:"NEW: Permanent promo rotation"},
+  {n:"C6: Competitor Conquest",pct:"5-10%",roas:"→ 2.0x+",act:"Rebuilt: exact match, comparison LPs"},
+  {n:"C7: Affiliate Recruitment",pct:"3-5%",roas:"N/A",act:"NEW: Recruit affiliates via paid search"},
+];
+
+const CHECK = [
+  {i:"Shadow account playbook v2 (GA4-backed)",s:"done"},
+  {i:"Google Ads Editor import CSV (141 rows)",s:"done"},
+  {i:"Negative keyword lists (49 negatives)",s:"done"},
+  {i:"Ad copy — 11 RSAs validated (30/90 char limits)",s:"done"},
+  {i:"Campaign architecture (7 campaigns, 11 ad groups)",s:"done"},
+  {i:"GA4 performance diagnostic & data analysis",s:"done"},
+  {i:"New Google account + payment method",s:"todo"},
+  {i:"Backup domain registration + SSL",s:"todo"},
+  {i:"Google Advertiser Verification (2-4 weeks)",s:"critical"},
+  {i:"Financial Services Certification",s:"critical"},
+  {i:"Landing pages on backup domain",s:"todo"},
+  {i:"Comparison LPs (vs FTMO, FundingPips)",s:"todo"},
+  {i:"Affiliate recruitment landing page",s:"todo"},
+  {i:"GA4 property + GTM for backup domain",s:"todo"},
+  {i:"Consent Mode v2 + CMP",s:"todo"},
+  {i:"Conversion action: Purchase = PRIMARY only",s:"critical"},
+  {i:"Enhanced Conversions setup",s:"todo"},
+  {i:"Import CSV into Google Ads Editor",s:"todo"},
+  {i:"Configure PMax asset groups (C1, C4, C5)",s:"todo"},
+  {i:"Warm-up test run (branded campaign)",s:"todo"},
+];
+
+// HELPERS
+const fmt = n => n>=1e6?'€'+(n/1e6).toFixed(2)+'M':n>=1e3?'€'+Math.round(n/1e3)+'K':'€'+Math.round(n);
+const fmtX = n => n.toFixed(2)+'x';
+const roasColor = r => r>=2?'var(--green)':r>=1?'var(--amber)':'var(--red)';
+const badgeClass = c => c==='green'?'b-green':c==='red'?'b-red':c==='amber'?'b-amber':'b-blue';
+
+// RENDER CAMPAIGNS
+function renderCamps(sortKey){
+  const s = [...C].sort((a,b)=> sortKey==='roas'?b.roas-a.roas:sortKey==='rev'?b.rev-a.rev:b.cost-a.cost);
+  document.getElementById('camp-list').innerHTML = s.map(c=>`
+    <div class="row-item camp-row">
+      <div><div style="font-size:14px;font-weight:600">${c.n}</div><div style="font-size:12px;color:var(--muted)">${c.t}</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:600">${fmt(c.cost)}</div><div style="font-size:11px;color:var(--muted)">spend</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:600;color:${c.rev>0?'var(--txt)':'var(--red)'}">${c.rev>0?fmt(c.rev):'€0'}</div><div style="font-size:11px;color:var(--muted)">revenue</div></div>
+      <div style="text-align:right;font-size:14px;font-weight:700;color:${roasColor(c.roas)}">${fmtX(c.roas)}</div>
+      <div style="text-align:right"><span class="badge ${badgeClass(c.vc)}">${c.v}</span></div>
+    </div>
+  `).join('');
+}
+
+function sortCamps(key,btn){
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCamps(key);
+}
+
+// RENDER MONEY PITS
+function renderPits(){
+  const pits = C.filter(c=>c.roas<1&&c.cost>5000).sort((a,b)=>(a.rev-a.cost)-(b.rev-b.cost));
+  document.getElementById('money-pits').innerHTML = pits.map((c,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;${i<pits.length-1?'border-bottom:1px solid rgba(239,68,68,.15)':''}">
+      <span style="font-size:13px">${c.n}</span>
+      <span style="font-size:13px;font-weight:700;color:var(--red)">-${fmt(c.cost-c.rev)} net loss</span>
+    </div>
+  `).join('');
+}
+
+// RENDER KEYWORDS
+function renderKw(){
+  document.getElementById('kw-good').innerHTML = KW_GOOD.map(k=>`
+    <div class="kw-row"><span class="kw-name">${k.kw}</span><span style="color:var(--green);font-weight:600">€${k.cpa.toFixed(2)}</span><span style="color:var(--muted)">${k.cvr}% CVR</span></div>
+  `).join('');
+  document.getElementById('kw-bad').innerHTML = KW_BAD.map(k=>`
+    <div class="kw-row"><span class="kw-name">${k.kw}</span><span style="color:var(--red);font-weight:600">€${Math.round(k.cpa)}</span><span style="color:var(--muted)">${k.cvr}% CVR</span></div>
+  `).join('');
+}
+
+// RENDER SHADOW
+function renderShadow(){
+  document.getElementById('shadow-list').innerHTML = SHADOW.map(c=>`
+    <div class="row-item shadow-row">
+      <div style="font-size:14px;font-weight:600">${c.n}</div>
+      <div style="font-size:13px;color:var(--accent);font-weight:600;text-align:center">${c.pct}</div>
+      <div style="font-size:13px;color:var(--green);font-weight:600;text-align:center">${c.roas}</div>
+      <div style="font-size:12px;color:var(--muted)">${c.act}</div>
+    </div>
+  `).join('');
+}
+
+// RENDER CHECKLIST
+function renderCheck(){
+  const el = document.getElementById('check-list');
+  el.innerHTML = CHECK.map(c=>{
+    const ic = c.s==='done'?'check-done':c.s==='critical'?'check-crit':'check-todo';
+    const sym = c.s==='done'?'✓':c.s==='critical'?'!':'';
+    const bc = c.s==='done'?'b-green':c.s==='critical'?'b-red':'b-amber';
+    const bl = c.s==='done'?'COMPLETE':c.s==='critical'?'CRITICAL':'TO DO';
+    return `<div class="check-item"><div class="check-icon ${ic}">${sym}</div><div class="check-label">${c.i}</div><span class="badge ${bc}">${bl}</span></div>`;
+  }).join('');
+  document.getElementById('cnt-done').textContent = CHECK.filter(c=>c.s==='done').length;
+  document.getElementById('cnt-crit').textContent = CHECK.filter(c=>c.s==='critical').length;
+  document.getElementById('cnt-todo').textContent = CHECK.filter(c=>c.s==='todo').length;
+}
+
+// NAV
+function setNav(el){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// CHARTS
+function initCharts(){
+  const gc = 'rgba(255,255,255,.06)';
+  const tc = '#8896AB';
+
+  // Spend vs Revenue bar chart
+  const top10 = [...C].sort((a,b)=>b.cost-a.cost).slice(0,10);
+  new Chart(document.getElementById('chartSpend'),{
+    type:'bar',
+    data:{
+      labels:top10.map(c=>c.n),
+      datasets:[
+        {label:'Spend',data:top10.map(c=>c.cost),backgroundColor:'rgba(239,68,68,.7)',borderColor:'#EF4444',borderWidth:1,borderRadius:3,barPercentage:.45},
+        {label:'Revenue',data:top10.map(c=>c.rev),backgroundColor:'rgba(16,185,129,.7)',borderColor:'#10B981',borderWidth:1,borderRadius:3,barPercentage:.45}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:tc,font:{size:10},maxRotation:25}},
+        y:{grid:{color:gc},ticks:{color:tc,font:{size:11},callback:v=>'€'+Math.round(v/1e3)+'K'}}
+      }
+    }
+  });
+
+  // ROAS horizontal bar
+  const roasData = [...C].filter(c=>c.cost>1000).sort((a,b)=>b.roas-a.roas).slice(0,13);
+  const roasColors = roasData.map(c=>c.roas>=2?'rgba(16,185,129,.75)':c.roas>=1?'rgba(245,158,11,.75)':'rgba(239,68,68,.75)');
+  new Chart(document.getElementById('chartRoas'),{
+    type:'bar',
+    data:{
+      labels:roasData.map(c=>c.n),
+      datasets:[{data:roasData.map(c=>c.roas),backgroundColor:roasColors,borderColor:roasColors.map(c=>c.replace('.75)','1)')),borderWidth:1,borderRadius:3,barPercentage:.65}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>roasData[ctx.dataIndex].roas.toFixed(2)+'x ROAS | Spend: '+fmt(roasData[ctx.dataIndex].cost)}}},
+      scales:{
+        x:{grid:{color:gc},ticks:{color:tc,font:{size:11},callback:v=>v+'x'},max:Math.min(Math.max(...roasData.map(c=>c.roas))*1.1,20)},
+        y:{grid:{display:false},ticks:{color:tc,font:{size:11}}}
+      }
+    },
+    plugins:[{
+      afterDraw(chart){
+        const ctx=chart.ctx,xs=chart.scales.x,ys=chart.scales.y;
+        ctx.save();ctx.setLineDash([5,3]);ctx.lineWidth=1;
+        // 1x line
+        let x=xs.getPixelForValue(1);ctx.strokeStyle='#EF4444';ctx.beginPath();ctx.moveTo(x,ys.top);ctx.lineTo(x,ys.bottom);ctx.stroke();
+        // 2.5x line
+        x=xs.getPixelForValue(2.5);ctx.strokeStyle='#10B981';ctx.beginPath();ctx.moveTo(x,ys.top);ctx.lineTo(x,ys.bottom);ctx.stroke();
+        ctx.restore();
+      }
+    }]
+  });
+
+  // Keyword bubble chart
+  const kwAll = [
+    {kw:"prop firm",conv:2508,cpa:18.76,cvr:11.55},
+    {kw:"funderpro",conv:2233,cpa:27.73,cvr:14.37},
+    {kw:"prop firms stock",conv:794,cpa:10.34,cvr:8.75},
+    {kw:"prop trading firms",conv:296,cpa:50.71,cvr:2.56},
+    {kw:"forex funded",conv:269,cpa:40.48,cvr:4.01},
+    {kw:"funded account",conv:262,cpa:38.52,cvr:3.98},
+    {kw:"funded trading",conv:231,cpa:24.01,cvr:4.28},
+    {kw:"best funded",conv:223,cpa:13.38,cvr:8.55},
+    {kw:"pass challenge",conv:139,cpa:13.02,cvr:12.43},
+    {kw:"best prop trading",conv:121,cpa:13.85,cvr:7.93},
+    {kw:"instant fund",conv:109,cpa:13.30,cvr:9.30},
+    {kw:"prop firm stocks",conv:101,cpa:13.57,cvr:8.35},
+    {kw:"funded prop",conv:99,cpa:10.26,cvr:11.66},
+  ];
+  const kwColor = cpa => cpa<20?'rgba(16,185,129,.7)':cpa<40?'rgba(59,130,246,.7)':cpa<80?'rgba(245,158,11,.7)':'rgba(239,68,68,.7)';
+
+  new Chart(document.getElementById('chartKw'),{
+    type:'bar',
+    data:{
+      labels:kwAll.sort((a,b)=>b.conv-a.conv).map(k=>k.kw),
+      datasets:[{data:kwAll.sort((a,b)=>b.conv-a.conv).map(k=>k.conv),backgroundColor:kwAll.sort((a,b)=>b.conv-a.conv).map(k=>kwColor(k.cpa)),borderRadius:3,barPercentage:.7}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const k=kwAll.sort((a,b)=>b.conv-a.conv)[ctx.dataIndex];return k.conv+' conv | €'+k.cpa.toFixed(2)+' CPA | '+k.cvr+'% CVR'}}}},
+      scales:{
+        x:{grid:{color:gc},ticks:{color:tc,font:{size:11}}},
+        y:{grid:{display:false},ticks:{color:tc,font:{size:11}}}
+      }
+    }
+  });
+}
+
+// INIT
+renderCamps('cost');
+renderPits();
+renderKw();
+renderShadow();
+renderCheck();
+initCharts();
+</script>
+</body>
+</html>
